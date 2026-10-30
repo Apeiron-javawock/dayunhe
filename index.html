@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 关键：禁止手机端缩放，保证排版稳定 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>杭州京杭大运河 · 百年近代变迁</title>
+    <style>
+        /* ================= 基础重置与变量（高级黛蓝版） ================= */
+        :root {
+            --color-bg: #2c3e50; 
+            --color-bg-light: #3b5268;
+            --color-text-main: #f0f4f8; 
+            --color-text-sub: #a8bccb;
+            --color-gold: #f5d59f; 
+            --font-serif: 'STKaiti', 'KaiTi', '楷体', 'SimSun', '宋体', serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: var(--font-serif);
+            background-color: var(--color-bg);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(168, 188, 203, 0.1) 0%, transparent 50%),
+                repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(240, 244, 248, 0.02) 40px, rgba(240, 244, 248, 0.02) 80px);
+            color: var(--color-text-main);
+            line-height: 2.1;
+            padding: 0;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%; /* 防止手机端字体自动放大 */
+        }
+
+        /* 强制全局图片绝对自适应，不溢出 */
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* ================= 顶部导航（手机端支持横向滑动） ================= */
+        .nav-header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(245, 213, 159, 0.3);
+        }
+        .nav-list {
+            display: flex; justify-content: center; align-items: center;
+            max-width: 1200px; margin: 0 auto; padding: 14px 20px;
+            list-style: none; gap: 15px;
+            overflow-x: auto; /* 手机屏幕不够宽时可以滑动 */
+            white-space: nowrap;
+        }
+        .nav-list::-webkit-scrollbar { display: none; } /* 隐藏滚动条 */
+        .nav-list a {
+            color: var(--color-text-sub);
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            padding: 4px 8px;
+            transition: color 0.3s, border-bottom 0.3s;
+            border-bottom: 2px solid transparent;
+            flex-shrink: 0; /* 防止导航文字被挤变形 */
+        }
+        .nav-list a:hover {
+            color: var(--color-gold);
+            border-bottom: 2px solid var(--color-gold);
+        }
+
+        /* ================= 通用布局 ================= */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 110px 24px 60px;
+        }
+        section {
+            margin-bottom: 120px;
+            scroll-margin-top: 90px;
+        }
+
+        /* ================= 文本样式 ================= */
+        .sec-title {
+            font-size: clamp(2rem, 4.5vw, 2.8rem);
+            color: var(--color-gold);
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        }
+        .sec-subtitle {
+            font-size: 1.25rem;
+            color: var(--color-text-sub);
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            border-bottom: 1px dashed rgba(245, 213, 159, 0.4);
+            padding-bottom: 16px;
+        }
+        .sec-content p {
+            font-size: 1.35rem; 
+            text-indent: 2em;
+            margin-bottom: 24px; 
+            color: var(--color-text-main);
+            text-align: justify;
+        }
+
+        /* ================= 近代史开端过渡大标题 ================= */
+        .era-divider {
+            text-align: center;
+            margin: 120px 0 100px;
+            position: relative;
+        }
+        .era-divider::before, .era-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 25%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+        }
+        .era-divider::before { left: 5%; }
+        .era-divider::after { right: 5%; }
+        .era-title {
+            font-size: clamp(2.2rem, 5.5vw, 3.5rem);
+            color: var(--color-gold);
+            letter-spacing: 12px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 15px rgba(245, 213, 159, 0.2);
+        }
+        .era-subtitle {
+            font-size: 1.3rem;
+            color: var(--color-text-sub);
+            letter-spacing: 4px;
+        }
+
+        /* ================= 古代溯源时间轴 ================= */
+        .timeline-wrap {
+            background: var(--color-bg-light);
+            border-radius: 16px;
+            padding: 50px;
+            border: 1px solid rgba(245, 213, 159, 0.2);
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.2);
+            margin-top: 30px;
+        }
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+            border-left: 2px solid rgba(245, 213, 159, 0.4);
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 50px;
+        }
+        .timeline-item:last-child { margin-bottom: 0; }
+        .timeline-item::before {
+            content: '❖'; 
+            position: absolute;
+            left: -55px;
+            top: 0;
+            color: var(--color-bg);
+            font-size: 1.2rem;
+            background: var(--color-gold);
+            border-radius: 50%;
+            width: 30px; height: 30px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 10px rgba(245, 213, 159, 0.3);
+        }
+        .timeline-date {
+            font-size: 1.5rem;
+            color: var(--color-gold);
+            font-weight: bold;
+            margin-bottom: 12px;
+            display: inline-block;
+            border-bottom: 2px dotted rgba(245, 213, 159, 0.6);
+            padding-bottom: 4px;
+        }
+        .timeline-text {
+            font-size: 1.3rem; 
+            color: var(--color-text-main);
+            text-align: justify;
+            line-height: 1.9;
+        }
+        .ancient-tag {
+            display: inline-block;
+            background: rgba(168, 188, 203, 0.15);
+            color: var(--color-text-sub);
+            font-size: 0.95rem;
+            padding: 2px 10px;
+            border: 1px solid rgba(168, 188, 203, 0.4);
+            border-radius: 4px;
+            margin-left: 10px;
+            vertical-align: middle;
+            font-style: italic;
+        }
+
+        /* ================= 图片悬停动效 ================= */
+        .hover-zoom {
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        .hover-zoom:hover {
+            transform: scale(1.03);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+        }
+        .img-caption {
+            text-align: center;
+            font-size: 1.05rem;
+            color: var(--color-text-sub);
+            margin-top: 12px;
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+
+        /* ================= 板块1：首页 ================= */
+        .home-hero {
+            position: relative;
+            width: 100%;
+            height: 85vh;
+            min-height: 500px;
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 80px;
+        }
+        .hero-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            filter: none; 
+        }
+        .home-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 35%;
+            background: linear-gradient(to bottom, transparent, var(--color-bg));
+            z-index: 2;
+            pointer-events: none;
+        }
+        .hero-text-box {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            padding: 0 20px;
+            max-width: 1000px;
+        }
+        .hero-title {
+            font-size: clamp(2.5rem, 7vw, 4.8rem);
+            color: var(--color-gold);
+            letter-spacing: 10px;
+            margin-bottom: 28px;
+            font-weight: 900;
+            text-shadow: 2px 2px 15px rgba(0,0,0,0.9);
+        }
+        .hero-subtitle {
+            font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+            color: #fff;
+            letter-spacing: 5px;
+            background: rgba(44, 62, 80, 0.85);
+            display: inline-block;
+            padding: 15px 40px;
+            border-radius: 50px;
+            border: 1px solid rgba(245, 213, 159, 0.5);
+        }
+
+        /* ================= 板块2：晚清变局 ================= */
+        .layout-circle {
+            display: flex; gap: 50px; align-items: center; flex-wrap: wrap;
+        }
+        .circle-main-wrap {
+            flex: 1.2; min-width: 300px; display: flex; justify-content: center;
+        }
+        .circle-main {
+            width: 100%; max-width: 450px; aspect-ratio: 1/1;
+            object-fit: cover; border-radius: 50%;
+            border: 10px solid rgba(245, 213, 159, 0.2);
+        }
+        .circle-side-wrap {
+            flex: 0.8; min-width: 250px;
+            display: flex; flex-direction: column; gap: 24px; align-items: center;
+        }
+        .circle-small {
+            width: 200px; aspect-ratio: 1/1;
+            object-fit: cover; border-radius: 50%;
+            border: 6px solid rgba(245, 213, 159, 0.3);
+        }
+
+        /* ================= 板块3：民国荒芜 ================= */
+        .layout-cards {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;
+        }
+        .card-item {
+            background: var(--color-bg-light); border: 1px solid rgba(245, 213, 159, 0.2);
+            border-radius: 12px; overflow: hidden; padding: 20px;
+        }
+        .card-img {
+            width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 8px;
+            filter: sepia(0.5) contrast(1.1) brightness(0.9); 
+        }
+
+        /* ================= 板块4：新中国重生 ================= */
+        .layout-fan {
+            display: flex; gap: 50px; align-items: center; flex-wrap: wrap-reverse;
+        }
+        .fan-text { flex: 1.2; min-width: 300px; }
+        .fan-img-wrap { flex: 0.8; min-width: 300px; display: flex; justify-content: center; }
+        .fan-img {
+            width: 100%; max-width: 450px; aspect-ratio: 4/3; object-fit: cover;
+            clip-path: polygon(0 100%, 100% 100%, 85% 0, 15% 0);
+            border-bottom: 8px solid var(--color-gold);
+        }
+
+        /* ================= 板块5：当代申遗 ================= */
+        .layout-poly {
+            display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 30px;
+        }
+        .poly-item {
+            flex: 1 1 250px; aspect-ratio: 3/4; object-fit: cover; max-width: 320px;
+        }
+        .poly-1 { clip-path: polygon(0 0, 100% 10%, 90% 100%, 0% 90%); }
+        .poly-2 { clip-path: polygon(10% 0, 100% 0, 100% 90%, 0 100%); }
+        .poly-3 { clip-path: polygon(0 10%, 90% 0, 100% 90%, 10% 100%); }
+
+        /* ================= 板块6：博物馆展品 ================= */
+        .gallery-grid {
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; grid-auto-rows: 200px;
+        }
+        .gallery-item {
+            width: 100%; height: 100%; object-fit: cover; border-radius: 8px;
+            border: 1px solid rgba(245, 213, 159, 0.2);
+        }
+        .g-1 { grid-column: span 4; grid-row: span 2; }
+        .g-2 { grid-column: span 2; grid-row: span 1; } 
+        .g-3 { grid-column: span 2; grid-row: span 1; }
+        .g-4 { grid-column: span 3; grid-row: span 1; }
+        .g-5 { grid-column: span 3; grid-row: span 1; }
+
+        /* ================= 板块7：结尾页 ================= */
+        .ending-sec {
+            text-align: center; background: #1f2c38; padding: 100px 24px;
+            border-top: 2px solid rgba(245, 213, 159, 0.3); margin-bottom: 0;
+        }
+        .ending-img {
+            width: 100%; max-width: 850px; aspect-ratio: 4/3; object-fit: cover;
+            border-radius: 16px; border: 6px solid rgba(245, 213, 159, 0.4); 
+            margin: 40px auto; display: block; box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+        }
+        .ending-guide {
+            font-size: 1.35rem; color: var(--color-text-main); max-width: 900px; margin: 0 auto; line-height: 2.2;
+        }
+
+        /* ================= 📱 手机端专属适配调整（关键） ================= */
+        @media (max-width: 768px) {
+            .nav-list { justify-content: flex-start; padding: 12px 15px; gap: 15px; }
+            .nav-list a { font-size: 1rem; }
+            .container { padding-top: 90px; padding-left: 16px; padding-right: 16px; }
+            
+            .sec-content p { font-size: 1.2rem; margin-bottom: 20px; }
+            .timeline-wrap { padding: 24px 16px; }
+            .timeline-text { font-size: 1.15rem; }
+            .timeline-date { font-size: 1.3rem; }
+            .ancient-tag { display: block; margin: 8px 0 0 0; width: fit-content; }
+            
+            /* 左右布局强制变成上下布局 */
+            .layout-circle { flex-direction: column; gap: 30px; }
+            .circle-side-wrap { flex-direction: row; justify-content: center; gap: 20px; }
+            .circle-small { width: 130px; }
+            
+            .layout-fan { gap: 30px; }
+            
+            /* 网格图阵在手机上变成两列 */
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr); 
+                grid-auto-rows: 160px;
+            }
+            .g-1 { grid-column: span 2; grid-row: span 2; }
+            .g-2, .g-3 { grid-column: span 1; grid-row: span 1; }
+            .g-4, .g-5 { grid-column: span 2; grid-row: span 1; }
+
+            /* 异形图在手机端改回圆角矩形，防止显示不全 */
+            .poly-item { clip-path: none; border-radius: 12px; aspect-ratio: 4/3; }
+            
+            .era-divider::before, .era-divider::after { width: 15%; }
+            .era-title { letter-spacing: 6px; font-size: 2rem; }
+            .era-subtitle { font-size: 1.1rem; letter-spacing: 2px; }
+            
+            .hero-title { font-size: 2.5rem; }
+            .hero-subtitle { font-size: 1.1rem; padding: 10px 20px; }
+            .hero-intro { font-size: 1.1rem !important; }
+            
+            .ending-guide { font-size: 1.15rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部固定导航 -->
+    <header class="nav-header">
+        <ul class="nav-list">
+            <li><a href="#home">首页</a></li>
+            <li><a href="#history">千年溯源</a></li>
+            <li><a href="#late-qing">晚清变局</a></li>
+            <li><a href="#republic">民国荒芜</a></li>
+            <li><a href="#new-china">新中国重生</a></li>
+            <li><a href="#heritage">当代申遗</a></li>
+            <li><a href="#museum">博物馆展品</a></li>
+            <li><a href="#guide">参观引导</a></li>
+        </ul>
+    </header>
+
+    <!-- ================= 板块1：首页 ================= -->
+    <section id="home" class="home-hero">
+        <img src="1.jpg" alt="杭州拱宸桥运河全景" class="hero-bg">
+        <div class="hero-text-box">
+            <h1 class="hero-title">杭州京杭大运河</h1>
+            <div class="hero-subtitle">一条河见证百年近代变迁</div>
+            <p class="hero-intro" style="margin-top:40px; font-size:1.4rem; text-shadow:1px 1px 8px #000; line-height:1.8;">大运河自古代开凿成型，在近代迎来命运转折，从漕运命脉走向城市文化遗产。</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- ================= 板块2：千年溯源 ================= -->
+        <section id="history">
+            <h2 class="sec-title">千年溯源｜古代运河的成型</h2>
+            <div class="sec-subtitle">春秋至明清 · 奠定城市水脉根基</div>
+            
+            <div class="sec-content" style="margin-bottom: 40px;">
+                <p>京杭大运河并非一日建成，它是世界上里程最长、工程最大的古代运河。它不仅是古代中国的水上高速公路，更是历代封建王朝控制江南经济命脉的利器。从吴越争霸的军事水道，到隋唐帝国的南北大动脉，再到元明清三代的京师生命线，大运河的每一次变迁，都伴随着王朝的兴衰与城市的繁荣。</p>
+            </div>
+
+            <div class="timeline-wrap">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">春秋末期 <span class="ancient-tag">吴越争霸</span></div>
+                        <div class="timeline-text">吴王夫差为北伐齐国，争霸中原，下令开凿“邗沟”（今扬州一带），连通长江与淮河。这是大运河最早开凿的一段，最初的目的纯粹是为了运送兵员和粮草。此后，越王勾践灭吴，继续拓展水道，江南水网初具雏形。</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">隋朝大贯通 <span class="ancient-tag">帝国命脉</span></div>
+                        <div class="timeline-text">隋炀帝迁都洛阳后，为加强对江南富庶之地的控制，下令开凿通济渠、永济渠，并疏浚江南河。这一宏伟工程首次实现了南北大贯通，洛阳与杭州之间1500多公里的河道上，龙舟与漕船首尾相连，直通船舶。杭州由此成为南北交通枢纽，奠定了“咽喉吴越、势雄江海”的城市格局。</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">元朝截弯取直 <span class="ancient-tag">直达京师</span></div>
+                        <div class="timeline-text">元朝定都大都（北京）后，原有的运河需绕道洛阳，极为不便。为此，元世祖忽必烈下令先后开凿了济州河、会通河、通惠河，将运河“截弯取直”，不再经过洛阳，形成了今天京杭大运河的基本走向。杭州至大都全线通航，南方的粮米、丝绸、茶叶源源不断运往北方，拱宸桥一带的商贸开始兴盛。</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">明清鼎盛 <span class="ancient-tag">漕运巅峰</span></div>
+                        <div class="timeline-text">明清两代建都北京，大运河成为国家绝对的经济生命线，号称“半壁江山全靠这条河”。明清政府设立漕运总督，维持元朝运河基础，不断疏浚修造。杭州段运河商贸极其繁荣，沿岸码头林立，各地商帮云集，拱宸桥一带逐渐成为水陆物资集散的枢纽，夜夜笙歌，舟楫不绝。</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 近代史开端过渡大标题 ================= -->
+        <div class="era-divider">
+            <div class="era-title">近代风云</div>
+            <div class="era-subtitle">—— 运河的百年转折 ——</div>
+        </div>
+
+        <!-- ================= 板块3：晚清变局 ================= -->
+        <section id="late-qing">
+            <h2 class="sec-title">晚清变局｜漕运体系崩塌</h2>
+            <div class="sec-subtitle">1840 – 1911 · 铁路与海运冲击下的时代落幕</div>
+            
+            <div class="layout-circle">
+                <div class="circle-main-wrap">
+                    <img src="2.jpg" alt="晚清拱宸桥漕运" class="circle-main hover-zoom" loading="lazy">
+                </div>
+                <div class="circle-side-wrap">
+                    <img src="3.jpg" alt="晚清漕运展板" class="circle-small hover-zoom" loading="lazy">
+                    <img src="4.jpg" alt="清末运河淤积" class="circle-small hover-zoom" loading="lazy">
+                </div>
+            </div>
+            
+            <div class="sec-content" style="margin-top: 50px;">
+                <p><strong>1842年</strong>，鸦片战争爆发，英军在长江与大运河交汇处的镇江取得决定性胜利。这一战不仅切断了清政府的漕运命脉，更迫使清政府签订《中英南京条约》，中国的大门被坚船利炮轰开。随着通商口岸的开放，传统的自给自足经济受到严重冲击，大运河的命运也随之迎来了前所未有的转折。</p>
+                <p><strong>1853年后</strong>，太平天国运动占据南京和安徽沿江一带长达十多年。战火蔓延之处，运河漕运被迫全面中断。战争极其惨烈，运河沿线的主要城市均遭受重创，部分古老的河道、闸口与码头甚至被焚毁，千年繁华毁于一旦，大批商贾和百姓流离失所。</p>
+                <p><strong>1855年</strong>，黄河在河南铜瓦厢决口改道，导致运河山东段逐渐淤塞废弃。清政府内忧外患，国库空虚，根本无力组织大规模疏浚。无奈之下，清政府不得不将原本依靠运河的漕粮运输改走海路。失去了国家层面的维护，运河的衰败已成定局。</p>
+                <p><strong>1872年</strong>，轮船招商局在上海成立，正式使用现代火轮船承运漕粮。同时，津浦铁路开始在中国大地上铺设。随着现代交通的崛起，杭州段的运河泥沙淤积日益严重，维护经费极度匮乏。延续千年的漕运体系走向彻底瓦解，拱宸桥一带的传统商贸也迎来了极其痛苦而深刻的转型。</p>
+            </div>
+        </section>
+
+        <!-- ================= 板块4：民国荒芜 ================= -->
+        <section id="republic">
+            <h2 class="sec-title">民国荒芜期｜战乱与河道淤塞</h2>
+            <div class="sec-subtitle">1912 – 1949 · 航运衰败与堤岸损毁</div>
+            
+            <div class="sec-content" style="margin-bottom: 50px;">
+                <p><strong>1911年</strong>，津浦铁路全线通车。火车以远超舟船的运力和速度，瞬间改变了中国的交通格局。南北货运大量转由铁路运输，大运河以及沿线城市的交通地位一落千丈，逐渐被时代边缘化。</p>
+                <p>进入民国后，时局持续动荡，军阀混战，政府长期缺乏对运河的系统性治理。杭州段运河堤岸坍塌损毁、航道严重淤塞，曾经舟楫往来的沿岸码头与市镇商贸急剧衰退。失去了漕运功能的大运河，从国家的经济水运命脉，逐步沦为一条缺乏维护、杂草丛生、甚至散发着臭气的荒废河道，令人唏嘘。</p>
+            </div>
+
+            <div class="layout-cards">
+                <div class="card-item hover-zoom">
+                    <img src="5.jpg" alt="民国拱宸桥旧影" class="card-img" loading="lazy">
+                    <div class="img-caption">民国拱宸桥旧影</div>
+                </div>
+                <div class="card-item hover-zoom">
+                    <img src="6.jpg" alt="河道淤塞荒堤" class="card-img" loading="lazy">
+                    <div class="img-caption">河道淤塞荒堤旧貌</div>
+                </div>
+                <div class="card-item hover-zoom">
+                    <img src="7.jpg" alt="民国杭州运河码头" class="card-img" loading="lazy">
+                    <div class="img-caption">民国杭州运河码头旧影</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 板块5：新中国重生 ================= -->
+        <section id="new-china">
+            <h2 class="sec-title">新中国运河重生｜水利治理与复兴</h2>
+            <div class="sec-subtitle">1949 – 2000 · 从传统漕运走向现代水利</div>
+
+            <div class="layout-fan">
+                <div class="fan-text sec-content">
+                    <p>新中国成立后，百废待兴，国家立即开展大规模运河整修。经过无数劳动者的肩挑手扛，运河重新发挥航运、灌溉、防洪和排涝等多种作用。部分河段进行了拓宽加深、截弯取直，新建了许多现代化码头和船闸。</p>
+                    <p><strong>1988年底</strong>，京杭运河与钱塘江沟通工程建成，彻底将江、河、海衔接起来，实现了杭州人“江河互通”的千年梦想，极大地促进了浙江乃至华东地区的经济发展。</p>
+                    <p>杭州段重点建设了三堡船闸，清理了百年的淤泥，彻底恢复了航道通航能力。运河不再局限于传统的漕运，转型为服务民生、工业运输和城市调水的现代水利大通道，再次焕发了蓬勃生机。</p>
+                </div>
+                <div class="fan-img-wrap">
+                    <img src="8.jpg" alt="三堡船闸" class="fan-img hover-zoom" loading="lazy">
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 板块6：当代申遗 ================= -->
+        <section id="heritage">
+            <h2 class="sec-title">当代价值｜世界遗产与运河新生</h2>
+            <div class="sec-subtitle">2000 – 至今 · 活态文化遗产与南水北调</div>
+
+            <div class="sec-content">
+                <p><strong>2002年</strong>，原本只负责通航的京杭大运河被正式纳入“南水北调”三线工程之一，成为中国南水北调东线工程的重要环节。长江下游的甘甜江水通过运河，被源源不断地送往缺水的山东和河北等地，古老的运河承担起了缓解北方水资源危机的全新国家使命。</p>
+                <p><strong>2014年</strong>，在第38届世界遗产大会上，中国大运河成功列入《世界遗产名录》。杭州拱宸桥、桥西历史街区等遗产点完成了保护性更新，运河两岸的工厂和棚户区被搬迁，取而代之的是博物馆、文创园和滨水公园。运河从一条单纯的交通河道，彻底转型为承载城市记忆、生态景观与文旅价值的“活态文化遗产”。</p>
+                <p><strong>2022年</strong>，经过多年的生态补水与沿线整治，京杭大运河实现了百年来的首次全线水流贯通。断流已久的河道重新充盈，沉睡的古运河全面复苏，不仅改善了沿线生态环境，更重新连接了南北的文化与经济脉络，焕发出前所未有的全新生机。</p>
+            </div>
+
+            <div class="layout-poly">
+                <img src="9.jpg" alt="现代拱宸桥" class="poly-item poly-1 hover-zoom" loading="lazy">
+                <img src="10.jpg" alt="桥西历史街区" class="poly-item poly-2 hover-zoom" loading="lazy">
+                <img src="11.jpg" alt="申遗展板" class="poly-item poly-3 hover-zoom" loading="lazy">
+            </div>
+        </section>
+
+        <!-- ================= 板块7：博物馆展品 ================= -->
+        <section id="museum">
+            <h2 class="sec-title">中国京杭大运河博物馆｜实地展品</h2>
+            <div class="sec-subtitle">运河千年根基与近代变迁的见证</div>
+
+            <div class="sec-content" style="background: rgba(168, 188, 203, 0.15); padding: 30px; border-left: 6px solid var(--color-gold); margin-bottom: 50px;">
+                <p style="text-indent: 0; font-weight: bold;">大运河肇始于春秋，兴盛于隋唐宋元明清，丰厚的古代遗存奠定这条水道的根基。而在近代，它又经历漕运衰落、河道荒废、治理复兴的曲折历程。以下为本馆典藏历代运河相关实物展品，每一件都在诉说着这条河的沧桑巨变。</p>
+            </div>
+
+            <div class="gallery-grid">
+                <img src="12.jpg" alt="运河地图展板" class="gallery-item g-1 hover-zoom" loading="lazy">
+                <img src="13.jpg" alt="船闸模型" class="gallery-item g-2 hover-zoom" loading="lazy">
+                <img src="14.jpg" alt="富义仓展板" class="gallery-item g-3 hover-zoom" loading="lazy">
+                <img src="15.jpg" alt="街区沙盘" class="gallery-item g-4 hover-zoom" loading="lazy">
+                <img src="16.jpg" alt="漕船造船沙盘" class="gallery-item g-5 hover-zoom" loading="lazy">
+            </div>
+        </section>
+    </div>
+
+    <!-- ================= 板块8：结尾页 ================= -->
+    <section id="guide" class="ending-sec">
+        <h2 class="sec-title">详细内容见博物馆</h2>
+        
+        <img src="17.jpg" alt="中国京杭大运河博物馆正门" class="ending-img hover-zoom" loading="lazy">
+        
+        <p class="ending-guide">线上科普内容有限，更多真实史料、文物细节、近代运河变迁故事，欢迎走进中国京杭大运河博物馆实地参观学习。</p>
+    </section>
+
+</body>
+</html>
